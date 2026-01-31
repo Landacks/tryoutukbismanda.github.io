@@ -1,0 +1,1626 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tryout UKBI SMA - 30 Soal</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #87CEEB 0%, #4A90E2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        header {
+            background: linear-gradient(90deg, #2c3e50, #3498db);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        
+        .timer {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .hidden { display: none; }
+        
+        .login-form, .paket-form, .info-form, .admin-login {
+            text-align: center;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        input:focus, select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(52,152,219,0.4); }
+        
+        .btn-admin {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            margin-top: 20px;
+            font-size: 18px;
+            padding: 15px;
+        }
+        
+        .paket-grid {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .paket-btn {
+            width: 120px;
+            height: 120px;
+            border: 3px solid #ddd;
+            border-radius: 15px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .paket-btn:hover {
+            border-color: #3498db;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(52,152,219,0.3);
+        }
+        
+        .paket-btn.selected {
+            border-color: #27ae60;
+            background: #d5f4e6;
+            box-shadow: 0 10px 25px rgba(39,174,96,0.3);
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .info-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #3498db;
+        }
+        
+        .info-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #3498db;
+        }
+        
+        /* Admin Dashboard Styles */
+        .admin-dashboard { max-width: 1200px; }
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .admin-stat-card {
+            background: linear-gradient(135deg, #4a5568, #2d3748);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        .admin-stat-number { font-size: 36px; font-weight: bold; }
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .admin-table th, .admin-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        .admin-table th {
+            background: #2c3e50;
+            color: white;
+            font-weight: bold;
+        }
+        .admin-table tr:hover { background: #f8f9fa; }
+        .grade-a { background: #d5f4e6; }
+        .grade-b { background: #fff3cd; }
+        .grade-c { background: #d6eaf8; }
+        .btn-logout {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            width: auto;
+            max-width: 100px;
+        }
+        .search-box { max-width: 300px; }
+        
+        /* Tryout Styles */
+        .menu-soal {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+        .menu-soal button {
+            width: 45px;
+            height: 45px;
+            border: none;
+            border-radius: 50%;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+        }
+        .gray { background: #95a5a6; }
+        .yellow { background: #f39c12; }
+        .green { background: linear-gradient(45deg, #3498db, #2980b9); }
+        .menu-soal button:hover:not(.green) { transform: scale(1.1); }
+        
+        .progress-bar {
+            background: #ecf0f1;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .soal-content { text-align: center; }
+        #gambarSoal {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        
+        .option {
+            background: white;
+            border: 2px solid #ddd;
+            padding: 15px 20px;
+            margin: 10px 0;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s;
+            position: relative;
+            font-size: 16px;
+        }
+        .option:hover {
+            border-color: #3498db;
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(52,152,219,0.2);
+        }
+        .option.selected {
+            border-color: #27ae60;
+            background: #d5f4e6;
+            box-shadow: 0 5px 20px rgba(39,174,96,0.3);
+        }
+        .option.selected::after {
+            content: "✓";
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #27ae60;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        .option.multi.selected-multiple::after {
+            content: "✓✓";
+            font-size: 16px;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        .btn-nav, .btn-ragu {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .btn-prev { background: #95a5a6; color: white; }
+        .btn-next { background: #3498db; color: white; }
+        .btn-ragu { background: #f39c12; color: white; }
+        .btn-selesai { 
+            background: linear-gradient(45deg, #3498db, #2980b9); 
+            color: white; 
+            width: 100%; 
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .btn-nav:hover, .btn-ragu:hover, .btn-selesai:not(.btn-disabled):hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .btn-disabled {
+            background: #bdc3c7 !important;
+            cursor: not-allowed !important;
+            opacity: 0.6;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .stat-item {
+            background: linear-gradient(135deg, #4a5568, #2d3748);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        .stat-number { font-size: 32px; font-weight: bold; }
+        
+        .notification {
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+            color: white;
+            padding: 15px;
+            position: fixed;
+            top: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(243,156,18,0.4);
+            transition: all 0.5s;
+            z-index: 1000;
+            max-width: 90%;
+        }
+        .notification.show { top: 20px; }
+        
+        .hasil-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        .hasil-modal.active { display: flex; }
+        .hasil-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideIn 0.5s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: scale(0.8) translateY(-50px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .soal-type {
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #1976d2;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Tryout UKBI SMA - 30 Soal</h1>
+        <div class="timer" id="timer">75:00</div>
+    </header>
+
+    <div class="container" id="loginPage">
+        <div class="login-form">
+            <h2>Selamat Datang</h2>
+            <p>Masukkan data lengkap untuk memulai tryout</p>
+            <input type="text" id="nama" placeholder="Nama Lengkap" required>
+            <select id="tingkat" onchange="showKelas()">
+                <option value="">Pilih Kelas</option>
+                <option value="10">Kelas 10</option>
+                <option value="11">Kelas 11</option>
+                <option value="12">Kelas 12</option>
+            </select>
+            <div id="nomorKelasDiv" class="hidden">
+                <input type="number" id="nomorKelas" placeholder="1-11" min="1" max="11" step="1">
+            </div>
+            <button class="btn-primary" onclick="nextToPaket()">Lanjut</button>
+            <button class="btn-admin" onclick="showAdminLogin()">Admin Login</button>
+        </div>
+    </div>
+
+    <div class="container hidden" id="adminLoginPage">
+        <div class="admin-login">
+            <h2>Admin Panel</h2>
+            <p>Masukkan kredensial admin</p>
+            <input type="password" id="adminPassword" placeholder="Password Admin">
+            <button class="btn-primary" onclick="loginAdmin()">Masuk Admin</button>
+            <button class="btn-primary" onclick="backToLogin()">Kembali</button>
+        </div>
+    </div>
+
+    <div class="container hidden admin-dashboard" id="adminDashboard">
+        <div class="admin-header">
+            <h1>Admin Dashboard - Hasil Tryout UKBI</h1>
+            <button class="btn-logout" onclick="logoutAdmin()">Logout</button>
+        </div>
+        <div class="admin-stats">
+            <div class="admin-stat-card">
+                <div class="admin-stat-number" id="totalPeserta">0</div>
+                <div>Total Peserta</div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-number" id="rataRataSkor">0</div>
+                <div>Rata-rata Skor</div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-number" id="tertinggiSkor">0</div>
+                <div>Skor Tertinggi</div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-number" id="paketTerpopuler">-</div>
+                <div>Paket Terpopuler</div>
+            </div>
+        </div>
+        <div style="display: flex; gap: 20px; margin-bottom: 20px;">
+            <input type="text" id="searchPeserta" class="search-box" placeholder="Cari nama peserta..." onkeyup="filterTable()">
+            <select id="filterPaket" onchange="filterTable()">
+                <option value="">Semua Paket</option>
+                <option value="A">Paket A</option>
+                <option value="B">Paket B</option>
+                <option value="C">Paket C</option>
+            </select>
+            <select id="filterKelas" onchange="filterTable()">
+                <option value="">Semua Kelas</option>
+                <option value="10">Kelas 10</option>
+                <option value="11">Kelas 11</option>
+                <option value="12">Kelas 12</option>
+            </select>
+        </div>
+        <table class="admin-table" id="adminTable">
+            <thead>
+                <tr>
+                    <th>Nama</th>
+                    <th>Kelas</th>
+                    <th>Paket</th>
+                    <th>Skor</th>
+                    <th>Grade</th>
+                    <th>Benar</th>
+                    <th>Waktu</th>
+                    <th>Tanggal</th>
+                </tr>
+            </thead>
+            <tbody id="adminTableBody"></tbody>
+        </table>
+    </div>
+
+    <div class="container hidden" id="paketPage">
+        <div class="paket-form">
+            <h2>Pilih Paket Soal</h2>
+            <p>Pilih salah satu paket untuk memulai tryout</p>
+            <div class="paket-grid">
+                <div class="paket-btn" onclick="pilihPaket('A')">
+                    <div>PAKET</div>
+                    <div style="font-size: 36px; margin-top: 5px;">A</div>
+                </div>
+                <div class="paket-btn" onclick="pilihPaket('B')">
+                    <div>PAKET</div>
+                    <div style="font-size: 36px; margin-top: 5px;">B</div>
+                </div>
+                <div class="paket-btn" onclick="pilihPaket('C')">
+                    <div>PAKET</div>
+                    <div style="font-size: 36px; margin-top: 5px;">C</div>
+                </div>
+            </div>
+            <button class="btn-primary" onclick="nextToInfo()">Lanjut ke Instruksi</button>
+        </div>
+    </div>
+
+    <div class="container hidden" id="infoPage">
+        <div class="info-form">
+            <h2>Petunjuk Pengerjaan</h2>
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-number">30</div>
+                    <div>Total Soal</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-number">20</div>
+                    <div>Pilihan Ganda</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-number">10</div>
+                    <div>Multi Jawaban</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-number">75</div>
+                    <div>Menit</div>
+                </div>
+            </div>
+            <p style="margin-top: 20px;">
+                • Soal 1-20: Pilihan ganda (klik 1x pilih, 2x batal)<br>
+                • Soal 21-30: Pilih lebih dari 1 jawaban (maksimal 3)<br>
+                • Tombol ragu-ragu: 1x setel ragu, 2x batalkan<br>
+                • Semua soal harus yakin (hijau) untuk selesai
+            </p>
+            <button class="btn-primary" onclick="startTryout()">Mulai Tryout</button>
+        </div>
+    </div>
+
+    <div class="container hidden" id="tryoutPage">
+        <div class="stats" id="stats">
+            <div class="stat-item">
+                <div class="stat-number" id="jawabanDikerjakan">0</div>
+                <div>Terjawab</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="soalRagu">0</div>
+                <div>Ragu-ragu</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="sisaWaktu">--</div>
+                <div>Sisa Menit</div>
+            </div>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        
+        <div class="menu-soal" id="menuSoal"></div>
+        
+        <div class="soal-content">
+            <h3 id="judulSoal">Soal 1 - Paket A</h3>
+            <div id="soalType" class="soal-type" style="display:none;"></div>
+            <img id="gambarSoal" alt="Soal">
+            <div id="opsi">
+                <div class="option" onclick="pilihJawaban(0)">A. Jawaban A</div>
+                <div class="option" onclick="pilihJawaban(1)">B. Jawaban B</div>
+                <div class="option" onclick="pilihJawaban(2)">C. Jawaban C</div>
+                <div class="option" onclick="pilihJawaban(3)">D. Jawaban D</div>
+            </div>
+        </div>
+        
+        <div class="nav-buttons">
+            <button class="btn-nav btn-prev" onclick="prevSoal()">Sebelumnya</button>
+            <button class="btn-ragu" onclick="setRaguRagu()">Ragu-ragu</button>
+            <button class="btn-nav btn-next" onclick="nextSoal()">Selanjutnya</button>
+        </div>
+        <button class="btn-selesai" id="btnSelesai" onclick="selesaiTryout()">Selesai Tryout</button>
+    </div>
+
+    <div class="notification" id="notifRagu">Masih ada soal ragu-ragu! Harap tentukan jawaban yakin.</div>
+    <div class="notification" id="notifKosong" style="background: linear-gradient(45deg, #3498db, #2980b9);">Ada soal yang belum dijawab! Lengkapi semua soal terlebih dahulu.</div>
+
+    <div class="hasil-modal" id="hasilModal">
+        <div class="hasil-content">
+            <h2 id="hasilJudul">Hasil Tryout</h2>
+            <div id="hasilSkor" class="stat-number" style="color: #27ae60; margin: 20px 0;"></div>
+            <div id="hasilDetail"></div>
+            <button class="btn-primary" onclick="ulangTryout()" style="width: 200px; padding: 15px; margin-top: 20px;">
+                Kembali ke Menu
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let hasilSiswa = []; // Will be loaded from Google Sheets when admin logs in
+        let current = 0;
+        let jawaban = new Array(30).fill(null); // Array untuk single choice
+        let jawabanMulti = Array.from({length: 30}, () => []); // Array untuk multi choice
+        let status = new Array(30).fill("kosong");
+        let timer = 75 * 60; // 75 menit
+        let interval;
+        let namaPeserta = '';
+        let paketSoal = '';
+        let tingkatKelas = '';
+        let nomorKelas = '';
+        
+        const soalData = {
+    A: [
+        // SOAL 1-10: Dari soal baru paket A (PG)
+        {
+            text: "Kalimat yang paling efektif adalah …",
+            options: ["Para siswa-siswa sedang mengerjakan tugas.", "Siswa sedang mengerjakan tugas.", "Para siswa sedang mengerjakan tugas-tugas.", "Siswa-siswa sedang mengerjakan tugas."],
+            kunci: 1
+        },
+        {
+            text: "Kata baku dari karir adalah …",
+            options: ["Karir", "Karier", "Kariir", "Karirr"],
+            kunci: 1
+        },
+        {
+            text: "Kalimat berikut tidak efektif karena … 'Ia naik ke atas panggung untuk memberikan sambutan.'",
+            options: ["Ambigu", "Pleonasme", "Tidak padu", "Salah ejaan"],
+            kunci: 1
+        },
+        {
+            text: "Makna kata objektif adalah …",
+            options: ["Bersifat pribadi", "Berdasarkan perasaan", "Tidak memihak", "Terbatas"],
+            kunci: 2
+        },
+        {
+            text: "Kata hubung yang tepat: 'Ia tetap berangkat sekolah ___ hujan turun deras.'",
+            options: ["Karena", "Sehingga", "Walaupun", "Agar"],
+            kunci: 2
+        },
+        {
+            text: "Kalimat yang menggunakan kata baku adalah …",
+            options: ["Aktifitas belajar", "Resiko kecelakaan", "Analisis data", "Ijasah siswa"],
+            kunci: 2
+        },
+        {
+            text: "Persamaan kata teliti adalah …",
+            options: ["Ceroboh", "Cermat", "Cepat", "Pintar"],
+            kunci: 1
+        },
+        {
+            text: "Kalimat yang merupakan opini adalah …",
+            options: ["Air mendidih pada suhu 100°C.", "Indonesia merdeka tahun 1945.", "Belajar malam hari lebih efektif.", "Matahari terbit dari timur."],
+            kunci: 2
+        },
+        {
+            text: "Kata depan di ditulis terpisah jika menunjukkan …",
+            options: ["Cara", "Waktu", "Tempat", "Tujuan"],
+            kunci: 2
+        },
+        {
+            text: "Kalimat yang benar adalah …",
+            options: ["Data itu telah dianalisa.", "Data itu telah dianalisis.", "Data itu telah menganalisa.", "Data itu sedang dianalisa."],
+            kunci: 1
+        },
+        // SOAL 11-20: Dari soal baru paket A (lanjutan)
+        {
+            text: "Makna kata implisit adalah …",
+            options: ["Jelas", "Tersurat", "Tersirat", "Terbuka"],
+            kunci: 2
+        },
+        {
+            text: "Kalimat yang tidak ambigu adalah …",
+            options: ["Kepala sekolah baru datang.", "Kepala sekolah itu baru datang.", "Kepala sekolah baru itu datang.", "Kepala sekolah datang baru."],
+            kunci: 1
+        },
+        {
+            text: "Kata efisien berarti …",
+            options: ["Cepat", "Hemat dan tepat guna", "Murah", "Rapi"],
+            kunci: 1
+        },
+        {
+            text: "Kalimat perintah ditandai dengan …",
+            options: ["Tanda titik", "Tanda tanya", "Tanda seru", "Tanda koma"],
+            kunci: 2
+        },
+        {
+            text: "Antonim kata statis adalah …",
+            options: ["Diam", "Tetap", "Dinamis", "Pasif"],
+            kunci: 2
+        },
+        {
+            text: "Kalimat yang padu adalah …",
+            options: ["Ia belajar dan buku dibaca.", "Ia belajar sambil membaca buku.", "Ia belajar dan membaca buku dibaca.", "Ia belajar buku membaca."],
+            kunci: 1
+        },
+        {
+            text: "Kata evaluasi berarti …",
+            options: ["Perencanaan", "Penilaian", "Pelaksanaan", "Pengawasan"],
+            kunci: 1
+        },
+        {
+            text: "Penulisan yang benar adalah …",
+            options: ["bulan Agustus", "Bulan agustus", "Bulan Agustus", "bulan agustus"],
+            kunci: 2
+        },
+        {
+            text: "Kalimat berikut tidak efektif karena pleonasme …",
+            options: ["Ia turun ke bawah.", "Ia pergi ke sekolah.", "Ia membaca buku.", "Ia menulis surat."],
+            kunci: 0
+        },
+        {
+            text: "Kalimat berita adalah …",
+            options: ["Tolong tutup pintu itu!", "Apakah kamu sudah belajar?", "Siswa sedang mengikuti ujian.", "Jangan berisik!"],
+            kunci: 2
+        },
+        // SOAL 21-30: Multiple choice dari soal panjang (21-30)
+        {
+            text: "Ciri-ciri teks eksposisi adalah …",
+            options: ["Bersifat informatif", "Mengandung fakta", "Bersifat persuasif", "Mengandung konflik", "Bertujuan memberi pengetahuan"],
+            kunci: [0,1,4]
+        },
+        {
+            text: "Yang termasuk unsur intrinsik cerpen adalah …",
+            options: ["Tema", "Alur", "Amanat", "Penulis", "Tokoh"],
+            kunci: [0,1,2,4]
+        },
+        {
+            text: "Kalimat efektif memiliki ciri …",
+            options: ["Hemat kata", "Logis", "Ambigu", "Padu", "Tidak bertele-tele"],
+            kunci: [0,1,3,4]
+        },
+        {
+            text: "Majas personifikasi terdapat pada kalimat …",
+            options: ["Angin bernyanyi di malam hari", "Daun melambai-lambai", "Hatinya sekeras baja", "Matahari tersenyum cerah", "Wajahnya pucat bagai kertas"],
+            kunci: [0,1,3]
+        },
+        {
+            text: "Yang termasuk kata baku adalah …",
+            options: ["Aktivitas", "Praktek", "Risiko", "Ijazah", "Nopember"],
+            kunci: [0,2,3]
+        },
+        {
+            text: "Struktur teks ceramah meliputi …",
+            options: ["Pembuka", "Isi", "Penutup", "Konflik", "Resolusi"],
+            kunci: [0,1,2]
+        },
+        {
+            text: "Ciri teks prosedur adalah …",
+            options: ["Menggunakan kalimat perintah", "Mengandung langkah-langkah", "Bersifat imajinatif", "Menggunakan konjungsi temporal", "Mengandung fakta"],
+            kunci: [0,1,3]
+        },
+        {
+            text: "Kalimat majemuk bertingkat ditandai oleh …",
+            options: ["Anak kalimat", "Induk kalimat", "Kata hubung subordinatif", "Dua kalimat setara", "Hubungan sebab-akibat"],
+            kunci: [0,1,2,4]
+        },
+        {
+            text: "Yang termasuk konjungsi kausalitas adalah …",
+            options: ["Karena", "Sehingga", "Tetapi", "Oleh sebab itu", "Namun"],
+            kunci: [0,1,3]
+        },
+        {
+            text: "Unsur kebahasaan teks laporan hasil observasi adalah …",
+            options: ["Kalimat definisi", "Istilah ilmiah", "Kata sifat", "Majas hiperbola", "Verba relasional"],
+            kunci: [0,1,4]
+        }
+    ],
+    B: [
+        // SOAL 1-10: Dari paket B baru (PG)
+        {
+            text: "Kalimat efektif adalah …",
+            options: ["Para hadirin dimohon agar supaya tenang.", "Hadirin dimohon agar tenang.", "Para hadirin dimohon supaya agar tenang.", "Hadirin agar supaya tenang."],
+            kunci: 1
+        },
+        {
+            text: "Kata tidak baku adalah …",
+            options: ["Praktik", "Risiko", "Nasehat", "Analisis"],
+            kunci: 2
+        },
+        {
+            text: "Makna kata signifikan adalah …",
+            options: ["Kecil", "Penting", "Sementara", "Biasa"],
+            kunci: 1
+        },
+        {
+            text: "Kalimat yang benar adalah …",
+            options: ["Walaupun hujan, tetapi ia datang.", "Walaupun hujan, ia datang.", "Tetapi hujan, ia datang.", "Walaupun ia datang, hujan."],
+            kunci: 1
+        },
+        {
+            text: "Kata hubung sebab-akibat adalah …",
+            options: ["Walaupun", "Agar", "Karena", "Jika"],
+            kunci: 2
+        },
+        {
+            text: "Sinonim kata akurat adalah …",
+            options: ["Tepat", "Cepat", "Rapi", "Teliti"],
+            kunci: 0
+        },
+        {
+            text: "Kalimat yang termasuk fakta adalah …",
+            options: ["Belajar daring lebih menyenangkan.", "Indonesia negara kepulauan.", "Film itu sangat bagus.", "Cuaca hari ini terasa dingin."],
+            kunci: 1
+        },
+        {
+            text: "Kata depan ke ditulis terpisah jika menunjukkan …",
+            options: ["Cara", "Tujuan", "Arah/tempat", "Keadaan"],
+            kunci: 2
+        },
+        {
+            text: "Penulisan gelar yang benar adalah …",
+            options: ["Andi, S.Pd", "Andi, S Pd", "Andi S.Pd.", "Andi, S. Pd."],
+            kunci: 0
+        },
+        {
+            text: "Kalimat tidak efektif karena pleonasme adalah …",
+            options: ["Ia masuk ke dalam rumah.", "Ia masuk rumah.", "Ia berada di rumah.", "Ia tinggal di rumah."],
+            kunci: 0
+        },
+        // SOAL 11-20: Lanjutan paket B
+        {
+            text: "Makna kata konsekuensi adalah …",
+            options: ["Proses", "Tujuan", "Akibat", "Pilihan"],
+            kunci: 2
+        },
+        {
+            text: "Kalimat yang padu adalah …",
+            options: ["Ia membaca dan menulis laporan.", "Ia membaca dan laporan menulis.", "Ia membaca laporan dan menulisnya membaca.", "Ia membaca laporan dan menulis baca."],
+            kunci: 0
+        },
+        {
+            text: "Kata global berarti …",
+            options: ["Lokal", "Mendunia", "Terbatas", "Sempit"],
+            kunci: 1
+        },
+        {
+            text: "Kalimat larangan ditandai dengan kata …",
+            options: ["Jangan", "Tolong", "Silakan", "Mari"],
+            kunci: 0
+        },
+        {
+            text: "Kata baku dari ijin adalah …",
+            options: ["Ijin", "Izin", "Ijien", "Izinan"],
+            kunci: 1
+        },
+        {
+            text: "Kalimat opini adalah …",
+            options: ["Air membeku pada 0°C.", "Matahari terbit dari timur.", "Remaja sekarang lebih kreatif.", "Indonesia merdeka 1945."],
+            kunci: 2
+        },
+        {
+            text: "Penulisan kata serapan yang benar adalah …",
+            options: ["Aktifitas", "Aktifitas", "Aktivitas", "Aktifitas"],
+            kunci: 2
+        },
+        {
+            text: "Kalimat yang lugas adalah …",
+            options: ["Ia berbicara dengan sangat amat jelas.", "Ia berbicara secara jelas.", "Ia berbicara dengan kejelasan nyata.", "Ia berbicara cukup jelas sekali."],
+            kunci: 1
+        },
+        {
+            text: "Kata implisit berarti …",
+            options: ["Tersurat", "Tersirat", "Jelas", "Terbuka"],
+            kunci: 1
+        },
+        {
+            text: "Kalimat tanya ditandai dengan …",
+            options: ["Tanda seru", "Tanda titik", "Tanda tanya", "Tanda koma"],
+            kunci: 2
+        },
+        // SOAL 21-30: Multiple choice dari soal panjang (bagian B)
+        {
+            text: "Kalimat opini ditandai dengan …",
+            options: ["Pendapat pribadi", "Fakta objektif", "Kata menurut", "Dugaan", "Penilaian"],
+            kunci: [0,2,3,4]
+        },
+        {
+            text: "Yang termasuk kata hubung penambahan adalah …",
+            options: ["Dan", "Serta", "Atau", "Selain itu", "Namun"],
+            kunci: [0,1,3]
+        },
+        {
+            text: "Struktur teks negosiasi meliputi …",
+            options: ["Orientasi", "Permintaan", "Pemenuhan", "Penawaran", "Resolusi"],
+            kunci: [0,1,2,3]
+        },
+        {
+            text: "Ciri puisi rakyat adalah …",
+            options: ["Anonim", "Berirama", "Bersifat modern", "Mengandung nasihat", "Disampaikan lisan"],
+            kunci: [0,1,3,4]
+        },
+        {
+            text: "Kalimat persuasif bertujuan untuk …",
+            options: ["Membujuk", "Mempengaruhi", "Mengajak", "Menghibur", "Memberi informasi"],
+            kunci: [0,1,2]
+        },
+        {
+            text: "Unsur ekstrinsik karya sastra meliputi …",
+            options: ["Latar belakang penulis", "Nilai sosial", "Amanat", "Nilai budaya", "Tema"],
+            kunci: [0,1,3]
+        },
+        {
+            text: "Kata serapan dari bahasa Arab adalah …",
+            options: ["Iman", "Ilmu", "Televisi", "Kabar", "Kamera"],
+            kunci: [0,1,3]
+        },
+        {
+            text: "Ciri teks biografi adalah …",
+            options: ["Mengisahkan tokoh", "Berdasarkan fakta", "Menggunakan sudut pandang orang pertama", "Bersifat kronologis", "Mengandung konflik imajiner"],
+            kunci: [0,1,3]
+        },
+        {
+            text: "Yang termasuk kalimat imperatif adalah …",
+            options: ["Tolong tutup pintu!", "Jangan ribut!", "Kamu belajar.", "Silakan duduk.", "Apakah kamu datang?"],
+            kunci: [0,1,3]
+        },
+        {
+            text: "Majas hiperbola terdapat pada kalimat …",
+            options: ["Tangisannya membelah langit", "Tubuhnya setinggi tiang", "Suaranya menggelegar", "Wajahnya seperti bulan", "Air matanya mengalir deras"],
+            kunci: [0,1]
+        }
+    ],
+    C: [
+        // SOAL 1-10: Dari paket C baru (PG)
+        {
+            text: "Kalimat yang paling efektif adalah …",
+            options: ["Siswa-siswa diwajibkan mengikuti upacara.", "Para siswa diwajibkan mengikuti upacara.", "Para siswa-siswa diwajibkan mengikuti upacara.", "Siswa diwajibkan mengikuti upacara-upacara."],
+            kunci: 1
+        },
+        {
+            text: "Kata baku dari resiko adalah …",
+            options: ["Resika", "Resiko", "Risiko", "Resik"],
+            kunci: 2
+        },
+        {
+            text: "Makna kata paradigma adalah …",
+            options: ["Tujuan", "Cara pandang", "Akibat", "Proses"],
+            kunci: 1
+        },
+        {
+            text: "Kalimat tidak efektif karena kata berlebih adalah …",
+            options: ["Ia mundur ke belakang.", "Ia berjalan cepat.", "Ia membaca buku.", "Ia menulis laporan."],
+            kunci: 0
+        },
+        {
+            text: "Sinonim kata cermat adalah …",
+            options: ["Cepat", "Teliti", "Pintar", "Pandai"],
+            kunci: 1
+        },
+        {
+            text: "Kalimat fakta adalah …",
+            options: ["Belajar pagi hari lebih efektif.", "Cuaca hari ini sangat panas.", "Air mendidih pada suhu 100°C.", "Film itu menarik."],
+            kunci: 2
+        },
+        {
+            text: "Kata hubung yang tepat adalah … 'Ia belajar keras ___ ingin lulus ujian.'",
+            options: ["Walaupun", "Karena", "Agar", "Sehingga"],
+            kunci: 2
+        },
+        {
+            text: "Kalimat yang benar adalah …",
+            options: ["Data itu telah dianalisa.", "Data itu dianalisis.", "Data itu telah menganalisa.", "Data itu dianalisa kan."],
+            kunci: 1
+        },
+        {
+            text: "Makna kata efektif adalah …",
+            options: ["Hemat", "Berhasil guna", "Cepat", "Murah"],
+            kunci: 1
+        },
+        {
+            text: "Penulisan huruf kapital yang benar adalah …",
+            options: ["bulan September", "Bulan september", "bulan september", "Bulan September"],
+            kunci: 3
+        },
+        // SOAL 11-20: Lanjutan paket C
+        {
+            text: "Kalimat perintah adalah …",
+            options: ["Apakah kamu sudah belajar?", "Jangan membuang sampah sembarangan!", "Siswa sedang belajar.", "Cuaca hari ini cerah."],
+            kunci: 1
+        },
+        {
+            text: "Kata tidak baku adalah …",
+            options: ["Praktik", "Risiko", "Analisa", "Proses"],
+            kunci: 2
+        },
+        {
+            text: "Makna kata akurat adalah …",
+            options: ["Cepat", "Tepat", "Hemat", "Rapi"],
+            kunci: 1
+        },
+        {
+            text: "Kalimat yang padu adalah …",
+            options: ["Ia membaca dan buku ditulis.", "Ia membaca buku dan menulis catatan.", "Ia membaca dan catatan buku.", "Ia membaca buku dan menulisnya baca."],
+            kunci: 1
+        },
+        {
+            text: "Kata evaluasi berarti …",
+            options: ["Penilaian", "Pelaksanaan", "Perencanaan", "Pengumuman"],
+            kunci: 0
+        },
+        {
+            text: "Kalimat opini adalah …",
+            options: ["Indonesia merdeka 1945.", "Air membeku pada 0°C.", "Buku itu sangat bermanfaat.", "Matahari terbit dari timur."],
+            kunci: 2
+        },
+        {
+            text: "Kata depan di ditulis terpisah jika menunjukkan …",
+            options: ["Cara", "Tempat", "Waktu", "Keadaan"],
+            kunci: 1
+        },
+        {
+            text: "Kalimat yang lugas adalah …",
+            options: ["Ia berbicara dengan sangat amat jelas.", "Ia berbicara secara jelas.", "Ia berbicara dengan kejelasan yang nyata.", "Ia berbicara cukup jelas sekali."],
+            kunci: 1
+        },
+        {
+            text: "Antonim kata pasif adalah …",
+            options: ["Diam", "Aktif", "Tenang", "Statis"],
+            kunci: 1
+        },
+        {
+            text: "Kalimat berita adalah …",
+            options: ["Jangan ribut!", "Apakah kamu siap?", "Rapat dimulai pukul delapan.", "Tolong tutup pintu!"],
+            kunci: 2
+        },
+        // SOAL 21-30: Multiple choice dari soal panjang (bagian C)
+        {
+            text: "Ciri paragraf deduktif adalah …",
+            options: ["Kalimat utama di awal", "Gagasan umum di depan", "Penjelasan di akhir", "Kalimat utama di tengah", "Pola khusus-umum"],
+            kunci: [0,1]
+        },
+        {
+            text: "Yang termasuk kata depan adalah …",
+            options: ["Di", "Ke", "Dari", "Dengan", "Dan"],
+            kunci: [0,1,2,3]
+        },
+        {
+            text: "Ciri teks editorial adalah …",
+            options: ["Berisi opini", "Bersifat argumentatif", "Mewakili sikap redaksi", "Bersifat naratif", "Mengkritisi peristiwa"],
+            kunci: [0,1,2,4]
+        },
+        {
+            text: "Kalimat tidak efektif ditandai oleh …",
+            options: ["Pleonasme", "Ambiguitas", "Kejelasan", "Ketidaktepatan diksi", "Kerancuan struktur"],
+            kunci: [0,1,3,4]
+        },
+        {
+            text: "Yang termasuk ragam bahasa resmi adalah …",
+            options: ["Surat dinas", "Pidato kenegaraan", "Percakapan santai", "Undang-undang", "Laporan penelitian"],
+            kunci: [0,1,3,4]
+        },
+        {
+            text: "Ciri teks anekdot adalah …",
+            options: ["Lucu", "Menyindir", "Mengandung kritik", "Bersifat tragis", "Berdasarkan peristiwa nyata"],
+            kunci: [0,1,2,4]
+        },
+        {
+            text: "Kalimat fakta dapat dibuktikan dengan …",
+            options: ["Data", "Angka", "Opini", "Bukti nyata", "Sumber terpercaya"],
+            kunci: [0,1,3,4]
+        },
+        {
+            text: "Ciri bahasa iklan adalah …",
+            options: ["Singkat", "Menarik", "Persuasif", "Informatif", "Berbelit-belit"],
+            kunci: [0,1,2,3]
+        },
+        {
+            text: "Yang termasuk jenis-jenis paragraf berdasarkan pola penalaran adalah …",
+            options: ["Deduktif", "Induktif", "Campuran", "Naratif", "Deskriptif"],
+            kunci: [0,1,2]
+        },
+        {
+            text: "Fungsi bahasa dalam komunikasi adalah …",
+            options: ["Informatif", "Ekspresif", "Direktif", "Estetis", "Argumentatif"],
+            kunci: [0,1,2,3,4]
+        }
+    ]
+};
+
+// Kunci jawaban untuk penilaian (index 0 = A, 1 = B, 2 = C, 3 = D)
+let kunciJawabanPaket = {
+    A: [1,1,1,2,2,2,1,2,2,1, 2,1,1,2,2,1,1,2,0,2, [0,1,4], [0,1,2,4], [0,1,3,4], [0,1,3], [0,2,3], [0,1,2], [0,1,2,4], [0,1], [0,1,4], [0,1,2]],
+    B: [1,2,1,1,2,0,1,2,0,0, 2,0,1,0,1,2,2,1,1,2, [0,2,3,4], [0,1,3], [0,1,2,3], [0,1,3,4], [0,1,2], [0,1,3], [0,1,3], [0,1,3], [0,1], [0,1,2]],
+    C: [1,2,1,0,1,2,2,1,1,3, 1,2,1,1,0,2,1,1,1,2, [0,1], [0,1,2,3], [0,1,2,4], [0,1,3,4], [0,1,2,4], [0,1,3,4], [0,1,2,3], [0,1,2], [0,1,2,3,4], [0,1,3]]
+};
+ 
+        let kunciJawaban = [];
+        let clickCount = {};
+        let waktuHabis = false;
+        let isAdmin = false;
+        const ADMIN_PASSWORD = "admin123";
+
+        function showKelas() {
+            document.getElementById("nomorKelasDiv").classList.toggle("hidden", 
+                !document.getElementById("tingkat").value);
+        }
+
+        function acakUrutanSoal() {
+            // Acak urutan soal (20 PG + 10 multi)
+            let urutan = [];
+            // Tambah 20 soal PG
+            for(let i = 0; i < 20; i++) urutan.push(i);
+            // Tambah 10 soal multi (21-30)
+            for(let i = 20; i < 30; i++) urutan.push(i);
+            
+            // Acak urutan
+            for(let i = urutan.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [urutan[i], urutan[j]] = [urutan[j], urutan[i]];
+            }
+            return urutan;
+        }
+
+        function pilihJawaban(index) {
+            const soalId = `${current}_${index}`;
+            if (!clickCount[soalId]) clickCount[soalId] = 0;
+            clickCount[soalId]++;
+            
+            const isMultiChoice = current >= 20; // Soal 21-30 adalah multi choice
+            
+            if (isMultiChoice) {
+                // Logika untuk multi choice (maksimal 3 jawaban)
+                let currentJawaban = jawabanMulti[current];
+                let indexJawaban = currentJawaban.indexOf(index);
+                
+                if (indexJawaban > -1) {
+                    // Hapus jawaban jika sudah dipilih
+                    currentJawaban.splice(indexJawaban, 1);
+                } else if (currentJawaban.length < 3) {
+                    // Tambah jawaban jika belum penuh
+                    currentJawaban.push(index);
+                }
+                
+                jawabanMulti[current] = currentJawaban;
+                status[current] = currentJawaban.length > 0 ? "yakin" : "kosong";
+            } else {
+                // Logika single choice
+                if (clickCount[soalId] === 2 && jawaban[current] === index) {
+                    jawaban[current] = null;
+                    status[current] = "kosong";
+                    clickCount[soalId] = 0;
+                    tampilkanSoal();
+                    return;
+                }
+                
+                jawaban[current] = index;
+                status[current] = "yakin";
+                clickCount[soalId] = 1;
+            }
+            
+            tampilkanSoal();
+        }
+
+        function tampilkanSoal() {
+            document.getElementById("judulSoal").textContent = `Soal ${current + 1} - Paket ${paketSoal}`;
+            
+            const soalTypeDiv = document.getElementById("soalType");
+            const isMultiChoice = current >= 20;
+            if (isMultiChoice) {
+                soalTypeDiv.textContent = "Jenis: PILIH LEBIH DARI 1 JAWABAN (Maksimal 3)";
+                soalTypeDiv.style.display = "block";
+            } else {
+                soalTypeDiv.style.display = "none";
+            }
+            
+            // Get current question data
+            const soalSekarang = soalData[paketSoal][current];
+            
+            // Display question text instead of image
+            const gambarSoal = document.getElementById("gambarSoal");
+            gambarSoal.style.display = "none"; // Hide the image element
+            
+            // Create or update question text element
+            let questionTextEl = document.getElementById("questionText");
+            if (!questionTextEl) {
+                questionTextEl = document.createElement("p");
+                questionTextEl.id = "questionText";
+                questionTextEl.style.fontSize = "18px";
+                questionTextEl.style.fontWeight = "bold";
+                questionTextEl.style.margin = "20px 0";
+                questionTextEl.style.textAlign = "left";
+                gambarSoal.parentNode.insertBefore(questionTextEl, gambarSoal);
+            }
+            questionTextEl.textContent = soalSekarang.text;
+            
+            // Update options with actual answer choices
+            const options = document.querySelectorAll(".option");
+            const pilihan = ['A', 'B', 'C', 'D', 'E'];
+            options.forEach((opt, i) => {
+                opt.classList.remove("selected", "selected-multiple");
+                
+                // Update option text
+                if (soalSekarang.options && soalSekarang.options[i]) {
+                    opt.textContent = `${pilihan[i]}. ${soalSekarang.options[i]}`;
+                    opt.style.display = "block";
+                } else {
+                    opt.style.display = "none"; // Hide if no option exists
+                }
+                
+                const isMultiChoice = current >= 20;
+                if (isMultiChoice) {
+                    if (jawabanMulti[current].includes(i)) {
+                        opt.classList.add("selected", "selected-multiple");
+                    }
+                } else {
+                    if (jawaban[current] === i) {
+                        opt.classList.add("selected");
+                    }
+                }
+            });
+            
+            updateStats();
+            updateMenu();
+            updateTombolSelesai();
+        }
+
+        function startTryout() {
+            document.getElementById("infoPage").classList.add("hidden");
+            document.getElementById("tryoutPage").classList.remove("hidden");
+            
+            clickCount = {};
+            waktuHabis = false;
+            jawaban = new Array(30).fill(null);
+            jawabanMulti = Array.from({length: 30}, () => []);
+            status = new Array(30).fill("kosong");
+            timer = 75 * 60;
+            current = 0;
+            
+            // Set kunci jawaban berdasarkan paket
+            kunciJawaban = kunciJawabanPaket[paketSoal];
+            
+            buatMenu();
+            tampilkanSoal();
+            updateStats();
+            mulaiTimer();
+        }
+
+        function mulaiTimer() {
+            interval = setInterval(() => {
+                timer--;
+                const menit = Math.floor(timer / 60);
+                const detik = timer % 60;
+                document.getElementById("timer").textContent = 
+                    `${menit.toString().padStart(2, '0')}:${detik.toString().padStart(2, '0')}`;
+                document.getElementById("sisaWaktu").textContent = menit;
+                
+                if (timer <= 0) {
+                    clearInterval(interval);
+                    waktuHabis = true;
+                    tampilkanHasil();
+                }
+            }, 1000);
+        }
+
+        function buatMenu() {
+            const menu = document.getElementById("menuSoal");
+            menu.innerHTML = '';
+            for (let i = 0; i < 30; i++) {
+                const btn = document.createElement("button");
+                btn.innerText = i + 1;
+                btn.className = "gray";
+                btn.onclick = () => { 
+                    current = i; 
+                    tampilkanSoal(); 
+                };
+                menu.appendChild(btn);
+            }
+        }
+
+        function nextSoal() {
+            if (current < 29 && !waktuHabis) {
+                current++;
+                tampilkanSoal();
+            }
+        }
+
+        function prevSoal() {
+            if (current > 0) {
+                current--;
+                tampilkanSoal();
+            }
+        }
+
+        function setRaguRagu() {
+            const soalId = `ragu_${current}`;
+            if (!clickCount[soalId]) clickCount[soalId] = 0;
+            clickCount[soalId]++;
+            
+            if (clickCount[soalId] === 2 && status[current] === "ragu") {
+                const isMultiChoice = current >= 20;
+                status[current] = (isMultiChoice ? jawabanMulti[current].length > 0 : jawaban[current] != null) ? "yakin" : "kosong";
+                clickCount[soalId] = 0;
+            } else {
+                status[current] = "ragu";
+            }
+            tampilkanSoal();
+        }
+
+        function updateMenu() {
+            const btns = document.querySelectorAll(".menu-soal button");
+            for (let i = 0; i < 30; i++) {
+                if (i < btns.length) {
+                    btns[i].className = status[i] === "kosong" ? "gray" : 
+                                        status[i] === "ragu" ? "yellow" : "green";
+                }
+            }
+        }
+
+        function updateStats() {
+            const terjawab = status.filter(s => s !== "kosong").length;
+            const ragu = status.filter(s => s === "ragu").length;
+            
+            document.getElementById("jawabanDikerjakan").textContent = terjawab;
+            document.getElementById("soalRagu").textContent = ragu;
+            
+            const progress = (terjawab / 30) * 100;
+            document.getElementById("progressFill").style.width = progress + "%";
+        }
+
+        function updateTombolSelesai() {
+            const btn = document.getElementById("btnSelesai");
+            // Button is always enabled - warnings will be shown in selesaiTryout()
+            btn.classList.remove("btn-disabled");
+            btn.disabled = false;
+        }
+
+        function selesaiTryout() {
+            // Allow submission even with time remaining
+            const adaKosong = status.includes("kosong");
+            
+            if (adaKosong && !waktuHabis) {
+                alert("Masih ada soal yang belum dijawab! Silakan jawab semua soal terlebih dahulu.");
+                return;
+            }
+            
+            const adaRagu = status.includes("ragu");
+            let pesan = "Yakin ingin menyelesaikan tryout?\nJawaban tidak bisa diubah lagi!";
+            if (adaRagu) {
+                pesan = "Masih ada soal yang ragu-ragu!\nYakin ingin menyelesaikan tryout?";
+            }
+            
+            if (waktuHabis || confirm(pesan)) {
+                tampilkanHasil();
+            }
+        }
+
+        function hitungSkor() {
+            let benar = 0;
+            for (let i = 0; i < 30; i++) {
+                const jawabanSiswa = i >= 20 ? jawabanMulti[i] : [jawaban[i]];
+                const jawabanBenar = kunciJawaban[i];
+                
+                if (Array.isArray(jawabanBenar)) {
+                    // Multi choice - harus sama persis
+                    if (JSON.stringify(jawabanSiswa.sort()) === JSON.stringify(jawabanBenar.sort())) {
+                        benar++;
+                    }
+                } else {
+                    // Single choice
+                    if (jawabanSiswa[0] === jawabanBenar) {
+                        benar++;
+                    }
+                }
+            }
+            return benar;
+        }
+
+        function tampilkanHasil() {
+            clearInterval(interval);
+            
+            const benar = hitungSkor();
+            const skor = Math.round((benar / 30) * 100);
+            const waktuUsed = Math.floor((75*60 - timer) / 60);
+            const waktuDetik = ((75*60 - timer) % 60);
+            const grade = getGrade(skor);
+            const tanggal = new Date().toLocaleString('id-ID');
+            
+            const hasil = {
+                nama: namaPeserta,
+                kelas: tingkatKelas,
+                nomorKelas: nomorKelas,
+                paket: paketSoal,
+                skor: skor,
+                benar: benar,
+                waktu: `${waktuUsed}m ${waktuDetik}s`,
+                grade: grade,
+                tanggal: tanggal
+            };
+            
+            // Send to Google Sheets
+            sendToGoogleSheets(hasil);
+            
+            document.getElementById("hasilJudul").textContent = `Hasil ${namaPeserta} - Paket ${paketSoal}`;
+            document.getElementById("hasilSkor").textContent = `${skor}/100`;
+            document.getElementById("hasilDetail").innerHTML = `
+                <p>Benar: <strong>${benar}</strong> dari 30 soal</p>
+                <p>Persentase: <strong>${skor}%</strong></p>
+                <p>Grade: <strong>${grade}</strong></p>
+                <p>Waktu: <strong>${waktuUsed}m ${waktuDetik}s</strong></p>
+            `;
+            
+            document.getElementById("hasilModal").classList.add("active");
+        }
+
+        function getGrade(skor) {
+            if (skor >= 90) return "A+ (Sangat Baik)";
+            if (skor >= 80) return "A (Baik Sekali)";
+            if (skor >= 70) return "B (Baik)";
+            if (skor >= 60) return "C (Cukup)";
+            return "D (Perlu Belajar Lagi)";
+        }
+
+        function ulangTryout() {
+            document.getElementById("hasilModal").classList.remove("active");
+            document.getElementById("tryoutPage").classList.add("hidden");
+            document.getElementById("loginPage").classList.remove("hidden");
+            
+            document.getElementById("nama").value = "";
+            document.getElementById("tingkat").value = "";
+            document.getElementById("nomorKelas").value = "";
+            document.getElementById("nomorKelasDiv").classList.add("hidden");
+        }
+
+        // Admin Functions (sama seperti sebelumnya dengan penyesuaian)
+        function showAdminLogin() {
+            document.getElementById("loginPage").classList.add("hidden");
+            document.getElementById("adminLoginPage").classList.remove("hidden");
+        }
+
+        function backToLogin() {
+            document.getElementById("adminLoginPage").classList.add("hidden");
+            document.getElementById("loginPage").classList.remove("hidden");
+        }
+
+        function loginAdmin() {
+            if (document.getElementById("adminPassword").value === ADMIN_PASSWORD) {
+                isAdmin = true;
+                loadAdminDashboard();
+                document.getElementById("adminLoginPage").classList.add("hidden");
+                document.getElementById("adminDashboard").classList.remove("hidden");
+            } else {
+                alert("Password salah!");
+            }
+        }
+
+        function logoutAdmin() {
+            isAdmin = false;
+            document.getElementById("adminDashboard").classList.add("hidden");
+            document.getElementById("loginPage").classList.remove("hidden");
+        }
+
+        async function loadAdminDashboard() {
+            // Show loading
+            document.getElementById("totalPeserta").textContent = "⌛";
+            document.getElementById("rataRataSkor").textContent = "⌛";
+            document.getElementById("tertinggiSkor").textContent = "⌛";
+            document.getElementById("paketTerpopuler").textContent = "⌛";
+            
+            // Load from Google Sheets
+            await loadDataFromGoogleSheets();
+            
+            // Display data
+            updateAdminStats();
+            renderAdminTable();
+        }
+
+        function updateAdminStats() {
+            const total = hasilSiswa.length;
+            const totalSkor = hasilSiswa.reduce((sum, s) => sum + s.skor, 0);
+            const rataRata = total ? Math.round(totalSkor / total) : 0;
+            const tertinggi = hasilSiswa.length ? Math.max(...hasilSiswa.map(s => s.skor)) : 0;
+            
+            const paketCount = {};
+            hasilSiswa.forEach(s => paketCount[s.paket] = (paketCount[s.paket] || 0) + 1);
+            const paketPopuler = Object.entries(paketCount).reduce((a,b) => a[1] > b[1] ? a : b, ['',''])[0] || '-';
+            
+            document.getElementById("totalPeserta").textContent = total;
+            document.getElementById("rataRataSkor").textContent = rataRata;
+            document.getElementById("tertinggiSkor").textContent = tertinggi;
+            document.getElementById("paketTerpopuler").textContent = paketPopuler;
+        }
+
+        function renderAdminTable(filtered = hasilSiswa) {
+            const tbody = document.getElementById("adminTableBody");
+            tbody.innerHTML = '';
+            
+            // Sort by score from highest to lowest
+            const sorted = [...filtered].sort((a, b) => b.skor - a.skor);
+            
+            sorted.forEach(siswa => {
+                const row = tbody.insertRow();
+                row.className = `grade-${siswa.grade.charAt(0).toLowerCase()}`;
+                row.innerHTML = `
+                    <td>${siswa.nama}</td>
+                    <td>${siswa.kelas}-${siswa.nomorKelas}</td>
+                    <td>${siswa.paket}</td>
+                    <td><strong>${siswa.skor}</strong></td>
+                    <td>${siswa.grade}</td>
+                    <td>${siswa.benar}/30</td>
+                    <td>${siswa.waktu}</td>
+                    <td>${siswa.tanggal}</td>
+                `;
+            });
+        }
+
+        function filterTable() {
+            const search = document.getElementById("searchPeserta").value.toLowerCase();
+            const paket = document.getElementById("filterPaket").value;
+            const kelas = document.getElementById("filterKelas").value;
+            
+            const filtered = hasilSiswa.filter(s => 
+                (!search || s.nama.toLowerCase().includes(search)) &&
+                (!paket || s.paket === paket) &&
+                (!kelas || s.kelas === kelas)
+            );
+            renderAdminTable(filtered);
+        }
+
+        // ========== GOOGLE SHEETS INTEGRATION ==========
+        // REPLACE THIS URL WITH YOUR GOOGLE APPS SCRIPT URL
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxLZWf9lC-FbmAfBIp7GSvnm437JsB282nETZi_SS8ZL4vPI17tKphahmqYDD9vjyDJ/exec';
+        
+        // Send student score to Google Sheets
+        async function sendToGoogleSheets(data) {
+            if (GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL_HERE') {
+                console.log('⚠️ Google Sheets not configured yet');
+                alert('Skor berhasil disimpan!\n\nNamun Google Sheets belum dikonfigurasi.\nSkor hanya tersimpan di browser ini.\n\nBaca README.md untuk setup Google Sheets agar admin bisa melihat dari device lain.');
+                return;
+            }
+            
+            const formData = {
+                nama: data.nama,
+                kelas: data.kelas + '-' + data.nomorKelas,
+                paket: data.paket,
+                skor: data.skor,
+                benar: data.benar,
+                waktu: data.waktu,
+                grade: data.grade,
+                tanggal: data.tanggal
+            };
+            
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(formData)
+                });
+                console.log('✅ Data sent to Google Sheets');
+            } catch (error) {
+                console.error('❌ Error sending to Google Sheets:', error);
+            }
+        }
+        
+        // Load all scores from Google Sheets (for admin dashboard)
+        async function loadDataFromGoogleSheets() {
+            if (GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL_HERE') {
+                console.log('⚠️ Google Sheets not configured');
+                hasilSiswa = [];
+                alert('Google Sheets belum dikonfigurasi!\n\nBaca README.md untuk setup.\n\nAdmin dashboard akan kosong sampai Google Sheets dikonfigurasi.');
+                return;
+            }
+            
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL + '?action=get');
+                const data = await response.json();
+                
+                if (data.status === 'success' && data.data) {
+                    hasilSiswa = data.data.map(row => {
+                        const kelasParts = row.kelas.split('-');
+                        return {
+                            nama: row.nama,
+                            kelas: kelasParts[0],
+                            nomorKelas: kelasParts[1] || '',
+                            paket: row.paket,
+                            skor: parseInt(row.skor),
+                            benar: parseInt(row.benar),
+                            waktu: row.waktu,
+                            grade: row.grade,
+                            tanggal: row.tanggal
+                        };
+                    });
+                    console.log('✅ Loaded ' + hasilSiswa.length + ' records from Google Sheets');
+                } else {
+                    hasilSiswa = [];
+                    console.log('ℹ️ No data in Google Sheets yet');
+                }
+            } catch (error) {
+                console.error('❌ Error loading from Google Sheets:', error);
+                hasilSiswa = [];
+                alert('Gagal memuat data dari Google Sheets.\n\nPastikan:\n1. Google Apps Script sudah di-deploy\n2. URL sudah benar\n3. Deployment set ke "Anyone"');
+            }
+        }
+        // ========== END GOOGLE SHEETS INTEGRATION ==========
+
+
+        function nextToPaket() {
+            namaPeserta = document.getElementById("nama").value.trim();
+            tingkatKelas = document.getElementById("tingkat").value;
+            nomorKelas = document.getElementById("nomorKelas").value.trim();
+            
+            if (!namaPeserta || !tingkatKelas || !nomorKelas) {
+                alert("Lengkapi semua data terlebih dahulu!");
+                return;
+            }
+            
+            if (isNaN(nomorKelas) || nomorKelas < 1 || nomorKelas > 11) {
+                alert("Nomor kelas harus angka 1-11!");
+                return;
+            }
+            
+            document.getElementById("loginPage").classList.add("hidden");
+            document.getElementById("paketPage").classList.remove("hidden");
+        }
+
+        function pilihPaket(paket) {
+            paketSoal = paket;
+            document.querySelectorAll('.paket-btn').forEach(btn => btn.classList.remove('selected'));
+            event.target.classList.add('selected');
+        }
+
+        function nextToInfo() {
+            if (!paketSoal) {
+                alert("Pilih paket soal terlebih dahulu!");
+                return;
+            }
+            document.getElementById("paketPage").classList.add("hidden");
+            document.getElementById("infoPage").classList.remove("hidden");
+        }
+    </script>
+</body>
+</html>
