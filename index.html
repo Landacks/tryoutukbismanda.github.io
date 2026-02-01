@@ -1460,18 +1460,30 @@ let kunciJawabanPaket = {
 
         function updateAdminStats() {
             const total = hasilSiswa.length;
-            const totalSkor = hasilSiswa.reduce((sum, s) => sum + s.skor, 0);
-            const rataRata = total ? Math.round(totalSkor / total) : 0;
-            const tertinggi = hasilSiswa.length ? Math.max(...hasilSiswa.map(s => s.skor)) : 0;
+            
+            // Filter out invalid scores and convert to numbers
+            const validScores = hasilSiswa
+                .map(s => parseInt(s.skor))
+                .filter(skor => !isNaN(skor) && skor >= 0);
+            
+            const totalSkor = validScores.reduce((sum, skor) => sum + skor, 0);
+            const rataRata = validScores.length > 0 ? Math.round(totalSkor / validScores.length) : 0;
+            const tertinggi = validScores.length > 0 ? Math.max(...validScores) : 0;
             
             const paketCount = {};
-            hasilSiswa.forEach(s => paketCount[s.paket] = (paketCount[s.paket] || 0) + 1);
-            const paketPopuler = Object.entries(paketCount).reduce((a,b) => a[1] > b[1] ? a : b, ['',''])[0] || '-';
+            hasilSiswa.forEach(s => {
+                if (s.paket) {
+                    paketCount[s.paket] = (paketCount[s.paket] || 0) + 1;
+                }
+            });
+            const paketPopuler = Object.keys(paketCount).length > 0 
+                ? Object.entries(paketCount).reduce((a,b) => a[1] > b[1] ? a : b, ['',0])[0] 
+                : '-';
             
             document.getElementById("totalPeserta").textContent = total;
             document.getElementById("rataRataSkor").textContent = rataRata;
             document.getElementById("tertinggiSkor").textContent = tertinggi;
-            document.getElementById("paketTerpopuler").textContent = paketPopuler;
+            document.getElementById("paketTerpopuler").textContent = paketPopuler || '-';
         }
 
         function renderAdminTable(filtered = hasilSiswa) {
@@ -1561,19 +1573,19 @@ let kunciJawabanPaket = {
                 
                 if (data.status === 'success' && data.data) {
                     hasilSiswa = data.data.map(row => {
-                        const kelasParts = row.kelas.split('-');
+                        const kelasParts = (row.kelas || '').split('-');
                         return {
-                            nama: row.nama,
-                            kelas: kelasParts[0],
+                            nama: row.nama || '',
+                            kelas: kelasParts[0] || '',
                             nomorKelas: kelasParts[1] || '',
-                            paket: row.paket,
-                            skor: parseInt(row.skor),
-                            benar: parseInt(row.benar),
-                            waktu: row.waktu,
-                            grade: row.grade,
-                            tanggal: row.tanggal
+                            paket: row.paket || '',
+                            skor: parseInt(row.skor) || 0,
+                            benar: parseInt(row.benar) || 0,
+                            waktu: row.waktu || '',
+                            grade: row.grade || '',
+                            tanggal: row.tanggal || ''
                         };
-                    });
+                    }).filter(s => s.nama && !isNaN(s.skor)); // Filter out invalid entries
                     console.log('✅ Loaded ' + hasilSiswa.length + ' records from Google Sheets');
                 } else {
                     hasilSiswa = [];
