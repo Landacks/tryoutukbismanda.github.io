@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anonymous Messages</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #FFD500;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 100%;
+            padding: 40px;
+            animation: slideUp 0.5s ease;
+            border: 3px solid #000000;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        h1 {
+            text-align: center;
+            color: #000000;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #000000;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #FFD500;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #000000;
+            box-shadow: 0 0 0 3px rgba(255, 213, 0, 0.3);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .char-count {
+            text-align: right;
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #FFD500;
+            color: #000000;
+            border: 2px solid #000000;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #000000;
+            color: #FFD500;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #000000;
+            border: 2px solid #000000;
+        }
+
+        .btn-secondary:hover {
+            background: #000000;
+            color: #FFD500;
+        }
+
+        .btn-admin {
+            background: white;
+            margin-top: 20px;
+            font-size: 14px;
+            padding: 10px;
+        }
+
+        .success-message {
+            background: #FFD500;
+            color: #000000;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            border: 2px solid #000000;
+        }
+
+        /* Admin Dashboard */
+        .admin-container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .message-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #FFD500;
+            border: 2px solid #000000;
+            transition: all 0.3s;
+        }
+
+        .message-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            background: #FFD500;
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .message-from {
+            font-weight: 600;
+            color: #000000;
+            font-size: 16px;
+        }
+
+        .message-time {
+            color: #666;
+            font-size: 12px;
+        }
+
+        .message-content {
+            color: #333;
+            line-height: 1.6;
+            margin-top: 10px;
+        }
+
+        .no-messages {
+            text-align: center;
+            color: #999;
+            padding: 40px;
+            font-style: italic;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #FFD500;
+            color: #000000;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px solid #000000;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .delete-btn {
+            background: #000000;
+            color: #FFD500;
+            border: 2px solid #000000;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-top: 10px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .delete-btn:hover {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 600px) {
+            .container, .admin-container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Page - Send Message -->
+    <div id="mainPage" class="container">
+        <h1>Send Anonymous Message</h1>
+        <p class="subtitle">Send an honest message anonymously</p>
+
+        <div class="input-group">
+            <label>From:</label>
+            <input type="text" id="senderName" placeholder="Enter your name..." maxlength="50">
+        </div>
+
+        <div class="input-group">
+            <label>Your Message:</label>
+            <textarea id="messageText" placeholder="Type your message here... (be kind!)" maxlength="500"></textarea>
+            <div class="char-count"><span id="charCount">0</span>/500</div>
+        </div>
+
+        <button onclick="sendMessage()">Send Message</button>
+        <button class="btn-admin" onclick="showAdminLogin()">Admin Login</button>
+    </div>
+
+    <!-- Success Page -->
+    <div id="successPage" class="container hidden">
+        <div class="success-message">
+            <h2>Message Sent!</h2>
+            <p>Your anonymous message has been delivered.</p>
+        </div>
+        <button onclick="sendAnother()">Send Another Message</button>
+    </div>
+
+    <!-- Admin Login -->
+    <div id="adminLoginPage" class="container hidden">
+        <h1>Admin Login</h1>
+        <p class="subtitle">Enter password to view messages</p>
+
+        <div class="input-group">
+            <label>Password:</label>
+            <input type="password" id="adminPassword" placeholder="Enter admin password">
+        </div>
+
+        <button onclick="loginAdmin()">Login</button>
+        <button class="btn-secondary" onclick="backToMain()">Back</button>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="container admin-container hidden">
+        <div class="admin-header">
+            <h1>Messages Dashboard</h1>
+            <button class="btn-secondary" onclick="logoutAdmin()" style="width: auto; padding: 10px 20px;">Logout</button>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalMessages">0</div>
+                <div class="stat-label">Total Messages</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="todayMessages">0</div>
+                <div class="stat-label">Today</div>
+            </div>
+        </div>
+
+        <div id="messagesList"></div>
+    </div>
+
+    <script>
+        // Admin password - change this to your own password
+        const ADMIN_PASSWORD = "admin123";
+
+        // Storage key
+        const STORAGE_KEY = "ngl_messages";
+
+        // ========== GOOGLE SHEETS INTEGRATION ==========
+        // REPLACE THIS URL WITH YOUR GOOGLE APPS SCRIPT URL
+        const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_SCRIPT_URL_HERE';
+
+        // Get messages from localStorage
+        function getMessages() {
+            const messages = localStorage.getItem(STORAGE_KEY);
+            return messages ? JSON.parse(messages) : [];
+        }
+
+        // Save messages to localStorage
+        function saveMessages(messages) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+        }
+
+        // Send message to Google Sheets
+        async function sendToGoogleSheets(data) {
+            if (GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL_HERE') {
+                console.log('⚠️ Google Sheets not configured yet');
+                return;
+            }
+            
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+                console.log('✅ Message sent to Google Sheets');
+            } catch (error) {
+                console.error('❌ Error sending to Google Sheets:', error);
+            }
+        }
+
+        // Load messages from Google Sheets
+        async function loadFromGoogleSheets() {
+            if (GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL_HERE') {
+                console.log('⚠️ Google Sheets not configured');
+                return [];
+            }
+            
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL + '?action=get');
+                const data = await response.json();
+                
+                if (data.status === 'success' && data.data) {
+                    return data.data.map(row => ({
+                        id: parseInt(row.id) || Date.now(),
+                        from: row.from || 'Anonymous',
+                        message: row.message || '',
+                        timestamp: row.timestamp || new Date().toISOString(),
+                        date: row.date || new Date().toLocaleString('id-ID')
+                    }));
+                }
+                return [];
+            } catch (error) {
+                console.error('❌ Error loading from Google Sheets:', error);
+                return [];
+            }
+        }
+        // ========== END GOOGLE SHEETS INTEGRATION ==========
+
+        // Character counter
+        document.getElementById('messageText').addEventListener('input', function() {
+            document.getElementById('charCount').textContent = this.value.length;
+        });
+
+        // Send message
+        function sendMessage() {
+            let senderName = document.getElementById('senderName').value.trim();
+            const messageText = document.getElementById('messageText').value.trim();
+
+            // Check if name is empty
+            if (!senderName) {
+                const userChoice = confirm('You didn\'t input your name!\n\nClick OK to send as "Anonymous"\nClick Cancel to go back and enter your name');
+                
+                if (userChoice) {
+                    // User chose to send as anonymous
+                    senderName = 'Anonymous';
+                } else {
+                    // User chose to go back
+                    return;
+                }
+            }
+
+            if (!messageText) {
+                alert('Please write a message!');
+                return;
+            }
+
+            if (messageText.length < 5) {
+                alert('Message is too short! Write at least 5 characters.');
+                return;
+            }
+
+            // Create message object
+            const message = {
+                id: Date.now(),
+                from: senderName,
+                message: messageText,
+                timestamp: new Date().toISOString(),
+                date: new Date().toLocaleString('id-ID')
+            };
+
+            // Save to localStorage
+            const messages = getMessages();
+            messages.unshift(message);
+            saveMessages(messages);
+
+            // Send to Google Sheets
+            sendToGoogleSheets(message);
+
+            // Show success page
+            document.getElementById('mainPage').classList.add('hidden');
+            document.getElementById('successPage').classList.remove('hidden');
+
+            // Clear form
+            document.getElementById('senderName').value = '';
+            document.getElementById('messageText').value = '';
+            document.getElementById('charCount').textContent = '0';
+        }
+
+        // Send another message
+        function sendAnother() {
+            document.getElementById('successPage').classList.add('hidden');
+            document.getElementById('mainPage').classList.remove('hidden');
+        }
+
+        // Show admin login
+        function showAdminLogin() {
+            document.getElementById('mainPage').classList.add('hidden');
+            document.getElementById('adminLoginPage').classList.remove('hidden');
+        }
+
+        // Back to main
+        function backToMain() {
+            document.getElementById('adminLoginPage').classList.add('hidden');
+            document.getElementById('mainPage').classList.remove('hidden');
+        }
+
+        // Login admin
+        function loginAdmin() {
+            const password = document.getElementById('adminPassword').value;
+
+            if (password === ADMIN_PASSWORD) {
+                document.getElementById('adminLoginPage').classList.add('hidden');
+                document.getElementById('adminDashboard').classList.remove('hidden');
+                loadAdminDashboard();
+                document.getElementById('adminPassword').value = '';
+            } else {
+                alert('Wrong password!');
+            }
+        }
+
+        // Logout admin
+        function logoutAdmin() {
+            document.getElementById('adminDashboard').classList.add('hidden');
+            document.getElementById('mainPage').classList.remove('hidden');
+        }
+
+        // Load admin dashboard
+        async function loadAdminDashboard() {
+            // Show loading
+            document.getElementById('totalMessages').textContent = '⌛';
+            document.getElementById('todayMessages').textContent = '⌛';
+            document.getElementById('messagesList').innerHTML = '<div class="no-messages">Loading messages...</div>';
+            
+            // Load from Google Sheets
+            const sheetMessages = await loadFromGoogleSheets();
+            
+            // Merge with localStorage (in case Google Sheets fails)
+            const localMessages = getMessages();
+            const allMessages = sheetMessages.length > 0 ? sheetMessages : localMessages;
+            
+            // Update stats
+            document.getElementById('totalMessages').textContent = allMessages.length;
+            
+            const today = new Date().toLocaleDateString('id-ID');
+            const todayCount = allMessages.filter(m => {
+                const msgDate = new Date(m.timestamp).toLocaleDateString('id-ID');
+                return msgDate === today;
+            }).length;
+            document.getElementById('todayMessages').textContent = todayCount;
+
+            // Display messages
+            const messagesList = document.getElementById('messagesList');
+            
+            if (allMessages.length === 0) {
+                messagesList.innerHTML = '<div class="no-messages">No messages yet</div>';
+                return;
+            }
+
+            messagesList.innerHTML = allMessages.map(msg => `
+                <div class="message-card" id="msg-${msg.id}">
+                    <div class="message-header">
+                        <div class="message-from">From: ${escapeHtml(msg.from)}</div>
+                        <div class="message-time">${msg.date}</div>
+                    </div>
+                    <div class="message-content">${escapeHtml(msg.message)}</div>
+                    <button class="delete-btn" onclick="deleteMessage(${msg.id})">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        // Delete message - NOW ACTUALLY WORKS!
+        function deleteMessage(id) {
+            if (!confirm('Delete this message?')) return;
+
+            // Get current messages
+            let messages = getMessages();
+            
+            // Filter out the message with this ID
+            messages = messages.filter(m => m.id !== id);
+            
+            // Save back to localStorage
+            saveMessages(messages);
+            
+            // Reload the dashboard to show updated list
+            loadAdminDashboard();
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Enter key to send
+        document.getElementById('messageText').addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        document.getElementById('adminPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                loginAdmin();
+            }
+        });
+    </script>
+</body>
+</html>
